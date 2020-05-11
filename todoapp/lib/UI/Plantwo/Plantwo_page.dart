@@ -8,22 +8,35 @@ class PlantwoPage extends StatefulWidget {
 }
 
 class _PlantwoPageState extends State<PlantwoPage> {
+  List<PlantwoTodo> todoItems = [];
   @override
   Widget build(BuildContext context) {
+    todoItems = getList();
     return Container (
       color: ourblack,
-      child: ListView (
+      child: ReorderableListView (
         padding: EdgeInsets.only(top: 300),
-        children: getList(),
+        children: todoItems,
+        onReorder: _onReorder,
       ),
     );
   }
 
-    List<Widget> getList() {
-      List<PlantwoTodo> list = [];
-      for (int i = 0; i < 10; i++) {
-        list.add(PlantwoTodo());
+  void _onReorder (int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
       }
-      return list;
+      final PlantwoTodo item = todoItems.removeAt(oldIndex);
+      todoItems.insert(newIndex, item);
+    });
+  }
+
+    List<Widget> getList() {
+      for (int i = 0; i < 10; i++) {
+        todoItems.add(PlantwoTodo(keyValue: i.toString(), title: "Hello"));
+      }
+      return todoItems;
     }
 }
+
